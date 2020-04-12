@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ardintelai/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true ardintelai/react-test npm run test
+
+after_success:
+  - docker build -t ardintelai/multi-nginx ./nginx
+  - docker build -t ardintelai/multi-client ./client
+  - docker build -t ardintelai/multi-server ./server
+  - docker build -t ardintelai/multi-worker ./worker
+  # Log in to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push ardintelai/multi-nginx
+  - docker push ardintelai/multi-client
+  - docker push ardintelai/multi-server
+  - docker push ardintelai/multi-worker
