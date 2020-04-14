@@ -20,3 +20,18 @@ after_success:
   - docker push ardintelai/multi-client
   - docker push ardintelai/multi-server
   - docker push ardintelai/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  # Name of the application on Elastic Beanstalk
+  app: "multi-docker"
+  # Elastic Beanstalk environment
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-1-395748482621"
+  # Name of the application on Elastic Beanstalk
+  bucket_path: "multi-docker"
+  on:
+    branch: "master"
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
